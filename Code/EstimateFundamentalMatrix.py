@@ -1,6 +1,7 @@
 from scipy import linalg
 import numpy as np
 
+#finding mateches between two images 
 def FindCorrespondence(a,b,path):
     matching_list = []
 
@@ -12,7 +13,6 @@ def FindCorrespondence(a,b,path):
                     line_no += 1
                     nfeatures = line[11:15]
                     nfeatures = int(nfeatures)
-
                 else:
                     matching_list.append(line.rstrip('\n'))
     final_list = []   
@@ -85,9 +85,9 @@ def compute_fundamental(x1 , x2):
     return F/F[2,2]
 
     
-path = ("./Data/P3Data/")
-pts1,pts2,c=FindCorrespondence(1,2,path)
-F = compute_fundamental(pts1, pts2)
+# path = ("./Data/P3Data/")
+# pts1,pts2,c=FindCorrespondence(1,2,path)
+# F = compute_fundamental(pts1, pts2)
 
 
 
