@@ -84,6 +84,11 @@ def compute_fundamental(x1 , x2):
     
     return F/F[2,2]
 
+    
+path = ("./Data/P3Data/")
+pts1,pts2,c=FindCorrespondence(1,2,path)
+F = compute_fundamental(pts1, pts2)
+
 
 
 
