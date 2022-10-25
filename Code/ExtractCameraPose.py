@@ -4,9 +4,6 @@ def compute_camerapose(E):
     U, S, V_T = np.linalg.svd(E)
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
 
-    # print("E svd U", U)
-    # print("E svd S", S)
-    # print("E svd U[:, 2]", U[:, 2])
     R = []
     C = []
     R.append(np.dot(U, np.dot(W, V_T)))
