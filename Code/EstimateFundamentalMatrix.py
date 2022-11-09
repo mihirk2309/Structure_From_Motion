@@ -1,5 +1,7 @@
 from scipy import linalg
 import numpy as np
+import cv2
+import pry
 
 
 def normalized(uv):
@@ -20,6 +22,9 @@ def normalized(uv):
 
 def FindCorrespondence(a,b,path):
     matching_list = []
+    img1 = cv2.imread(path + str(a) + ".png")
+    img2 = cv2.imread(path + str(b) + ".png")
+
 
     if 1<= a <=5:
         with open(path + "matching" + str(a) + ".txt") as f:
@@ -73,36 +78,47 @@ def FindCorrespondence(a,b,path):
         
     image1_points = np.array(image1_points).reshape(-1,2)
     image2_points = np.array(image2_points).reshape(-1,2)
-                    
+
+    #Plot points on original images
+    # plot_points(img1, img2, image1_points, image2_points)
+
     return image1_points,image2_points,rgb_list
 
+def plot_points(img1, img2, pts1, pts2):
 
-def compute_fundamental(x1 , x2):
-    n = x1.shape[1]
-    if x2.shape[1] != n:
-        raise ValueError("Number of points don't match.")
-    
+    for pts1, pts2 in zip(pts1, pts2):   
+ 
+        image1 = cv2.circle(img1, (int(pts1[0]),int(pts1[1])), radius=2, color=(0, 0, 255), thickness=-1)
+        image2 = cv2.circle(img2, (int(pts2[0]),int(pts2[1])), radius=2, color=(0, 0, 255), thickness=-1)
+
+    cv2.imshow("Img1", image1)
+    cv2.imshow("img2", image2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindowss
+
+
+def ComputeFundamental(x1 , x2):
+   
     x1, T1 = normalized(x1)
     x2, T2 = normalized(x2)
     # build matrix for equations
-    A = np.zeros((n,9))
-    for i in range(n):
-        A[i] = [x1[0,i]*x2[0,i], x1[0,i]*x2[1,i], x1[0,i]*x2[2,i],
-                x1[1,i]*x2[0,i], x1[1,i]*x2[1,i], x1[1,i]*x2[2,i],
-                x1[2,i]*x2[0,i], x1[2,i]*x2[1,i], x1[2,i]*x2[2,i] ]
+    A = np.zeros((x1.shape[1],9))
+    for i in range(x1.shape[1]):
+        A[i] = [x1[0,i]*x2[1,i], x1[0,i]*x2[0,i], x1[0,i]*x2[2,i],
+                x1[1,i]*x2[1,i], x1[1,i]*x2[0,i], x1[1,i]*x2[2,i],
+                x1[2,i]*x2[1,i], x1[2,i]*x2[0,i], x1[2,i]*x2[2,i] ]
             
     # compute linear least square solution
     U,S,V = linalg.svd(A)
     F = V[-1].reshape(3,3)
+
         
     # constrain F
     # make rank 2 by zeroing out last singular value
     U,S,V = linalg.svd(F)
     S[2] = 0
     F = np.dot(U,np.dot(np.diag(S),V))
-
-    if True:
-        F = np.dot(T2.T, np.dot(F, T1))
+    F = np.dot(T2.T, np.dot(F, T1))
 
     return F/F[2,2]
 

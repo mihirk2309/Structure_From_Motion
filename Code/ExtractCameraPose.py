@@ -1,9 +1,9 @@
 import numpy as np
 
-def compute_camerapose(E):
+def ComputeCameraPose(E):
     U, S, V_T = np.linalg.svd(E)
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
-
+    ###### Change code ##########
     R = []
     C = []
     R.append(np.dot(U, np.dot(W, V_T)))

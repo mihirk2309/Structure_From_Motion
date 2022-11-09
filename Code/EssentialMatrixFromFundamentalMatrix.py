@@ -1,6 +1,6 @@
 import numpy as np
 
-def compute_essential(K, F):
+def ComputeEssential(K, F):
     e = K.T.dot(F).dot(K)
     U,s,V = np.linalg.svd(e)
     s = [1,1,0]
